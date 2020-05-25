@@ -19,9 +19,10 @@ defmodule Imgserver.Ws.Router do
   end
 
   get "/api/images/:name" do
-    name
-    |> fsmodule().get!
-    |> resp_json(conn)
+    case name |> fsmodule().get do
+      {:ok, stat} -> resp_json(stat, conn)
+      {:error, _test} -> resp_json_not_found(conn)
+    end
   end
 
   match _ do

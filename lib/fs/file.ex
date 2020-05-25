@@ -8,7 +8,7 @@ defmodule Imgserver.Fs.File do
             name: "",
             full_name: ""
 
-  @type t() :: %Imgserver.Fs.File{
+  @type t() :: %__MODULE__{
           atime: String.t(),
           ctime: String.t(),
           mtime: String.t(),
@@ -17,9 +17,9 @@ defmodule Imgserver.Fs.File do
           full_name: String.t()
         }
 
-  @spec from_stat(File.Stat.t(), Path.t(), Path.t()) :: Imgserver.Fs.File.t()
+  @spec from_stat(File.Stat.t(), Path.t(), Path.t()) :: __MODULE__.t()
   def from_stat(stat, name \\ "", full_name \\ "") do
-    %Imgserver.Fs.File{
+    %__MODULE__{
       atime: TimeUtil.to_string(stat.atime),
       ctime: TimeUtil.to_string(stat.ctime),
       mtime: TimeUtil.to_string(stat.mtime),

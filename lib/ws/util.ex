@@ -13,7 +13,7 @@ defmodule Imgserver.Ws.Util do
     error `message`.
     """
 
-    @type t() :: %Imgserver.Ws.Util.Error{
+    @type t() :: %__MODULE__{
             code: integer(),
             message: String.t()
           }
@@ -47,7 +47,7 @@ defmodule Imgserver.Ws.Util do
   404 not found error object.
   """
   def resp_json_not_found(conn) do
-    conn
-    |> resp_json_error(%Error{code: 404, message: "not found"})
+    %Error{code: 404, message: "not found"}
+    |> resp_json_error(conn)
   end
 end
