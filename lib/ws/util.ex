@@ -38,8 +38,8 @@ defmodule Imgserver.Ws.Util do
   and an error message.
   """
   def resp_json_error(err, conn) do
-    conn
-    |> resp_json(err, err.code)
+    err
+    |> resp_json(conn, err.code)
   end
 
   @doc """
