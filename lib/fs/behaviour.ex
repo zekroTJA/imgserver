@@ -3,5 +3,5 @@ defmodule Imgserver.Fs.FsBehaviour do
   TODO: Module and function docs
   """
   @callback ls!(path :: Path.t()) :: list(String.t())
-  @callback get!(path :: Path.t()) :: File.Stat.t()
+  @callback get!(path :: Path.t()) :: Imgserver.Fs.File.t()
 end

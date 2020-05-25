@@ -12,6 +12,12 @@ defmodule Imgserver.Ws.Util do
     object containing a `code` and an
     error `message`.
     """
+
+    @type t() :: %Imgserver.Ws.Util.Error{
+            code: integer(),
+            message: String.t()
+          }
+
     defstruct code: 0, message: ""
   end
 
@@ -20,7 +26,7 @@ defmodule Imgserver.Ws.Util do
   body content and `status` as response
   status code.
   """
-  def resp_json(conn, object, status \\ 200) do
+  def resp_json(object, conn, status \\ 200) do
     conn
     |> put_resp_content_type("application/json", "utf-8")
     |> send_resp(status, Poison.encode!(object))
@@ -31,7 +37,7 @@ defmodule Imgserver.Ws.Util do
   wrapping the error code (equals status code)
   and an error message.
   """
-  def resp_json_error(conn, err) do
+  def resp_json_error(err, conn) do
     conn
     |> resp_json(err, err.code)
   end
