@@ -42,12 +42,36 @@ defmodule Imgserver.Ws.Util do
     |> resp_json(conn, err.code)
   end
 
+  def resp_json_error(conn, code, message) do
+    %Error{
+      code: code,
+      message: message
+    }
+    |> resp_json_error(conn)
+  end
+
   @doc """
   Wraps `resp_json_error/2` with a predefined
   404 not found error object.
   """
-  def resp_json_not_found(conn) do
-    %Error{code: 404, message: "not found"}
-    |> resp_json_error(conn)
-  end
+  def resp_json_not_found(conn),
+    do:
+      %Error{code: 404, message: "not found"}
+      |> resp_json_error(conn)
+
+  @doc """
+  Wraps `resp_json_error/2` with a predefined
+  401 unauthorized error object.
+  """
+  def resp_json_unauthorized(conn),
+    do:
+      %Error{code: 401, message: "unauthorized"}
+      |> resp_json_error(conn)
+
+  @doc """
+  Sends a 200 OK response with the defined content
+  object or a default predefined ok object.
+  """
+  def resp_json_ok(data \\ %{code: 200, message: "ok"}, conn),
+    do: data |> resp_json(conn, 200)
 end

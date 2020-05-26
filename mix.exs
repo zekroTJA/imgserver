@@ -23,7 +23,8 @@ defmodule Imgserver.MixProject do
   defp deps do
     [
       {:plug_cowboy, "~> 2.0"},
-      {:poison, "~> 3.1"}
+      {:poison, "~> 3.1"},
+      {:guardian, "~> 2.0"}
     ]
   end
 end
