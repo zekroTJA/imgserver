@@ -29,7 +29,6 @@ defmodule Imgserver.Ws.Auth.Plug do
 
   defp check_resource_sub(conn, resource) do
     if resource.session_id != @authsub do
-      IO.inspect(resource)
       conn |> resp_json_unauthorized |> halt
     else
       conn
