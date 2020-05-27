@@ -8,13 +8,11 @@ defmodule Imgserver.Fs.Local do
 
   @rootpath Imgserver.Config.get_sub(FS, :root_location, ".")
 
-  @impl FsBehaviour
   def ls!(path \\ "") do
     Path.join(@rootpath, path)
     |> File.ls!()
   end
 
-  @impl FsBehaviour
   def get(path) do
     full_path = Path.join(@rootpath, path)
 
@@ -24,12 +22,20 @@ defmodule Imgserver.Fs.Local do
     end
   end
 
-  @impl FsBehaviour
   def get!(path) do
     full_path = Path.join(@rootpath, path)
 
     full_path
     |> File.stat!()
     |> Imgserver.Fs.File.from_stat(path, full_path)
+  end
+
+  def get_data(path) do
+    mime = Imgserver.Shared.File.get_mime_type(path)
+
+    case File.read(path) do
+      {:error, err} -> {:error, err}
+      {:ok, data} -> {:ok, data, mime}
+    end
   end
 end

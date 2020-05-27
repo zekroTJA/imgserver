@@ -10,6 +10,7 @@ defmodule Imgserver.Ws.Router.AuthExclude do
 
   @authmodule Imgserver.Config.get_sub(WS, :auth_module, Imgserver.Ws.Auth.Jwt)
   @authsub "default"
+  @fsmodule Imgserver.Config.get_sub(FS, :module, Imgserver.Fs.Local)
 
   plug(:match)
   plug(:dispatch)
@@ -29,6 +30,30 @@ defmodule Imgserver.Ws.Router.AuthExclude do
         {:ok, token} -> conn |> put_resp_cookie("__auth_key", token) |> resp_json_ok |> halt
         {:error, err} -> err |> resp_json_error(500, err) |> halt
       end
+    end
+  end
+
+  get "/:name" do
+    if name =~ ~r/^[\w\d-]+\.[\w\d]+$/ do
+      case name |> @fsmodule.get do
+        {:error, _err} ->
+          conn |> resp_json_not_found |> halt
+
+        {:ok, stat} ->
+          case @fsmodule.get_data(stat.full_name) do
+            {:error, err} ->
+              conn |> resp_json_error(500, err) |> halt
+
+            {:ok, data, mime} ->
+              # TODO: Add caching headers
+              conn
+              |> put_resp_content_type(mime, nil)
+              |> send_resp(200, data)
+              |> halt
+          end
+      end
+    else
+      conn
     end
   end
 
@@ -64,7 +89,7 @@ defmodule Imgserver.Ws.Router do
   end
 
   # Information about a specific image
-  get "/api/images/:name/info" do
+  get "/api/images/:name" do
     case name |> @fsmodule.get do
       {:ok, stat} -> resp_json(stat, conn)
       {:error, _test} -> resp_json_not_found(conn)
